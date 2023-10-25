@@ -4,23 +4,29 @@
  */
 package giaodien;
 
-import dao.TheLoaiDAO;
+import bus.SachBUS;
+import bus.TheLoaiBUS;
+import dto.Sach;
 import dto.TheLoai;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author ADMIN
  */
 public class BookManagementPanel extends javax.swing.JPanel {
-     TheLoaiDAO dao = new TheLoaiDAO();
+
+    TheLoaiBUS theloaiBUS = new TheLoaiBUS();
+    SachBUS sachBUS = new SachBUS();
     /**
      * Creates new form CategoryManagementPanel
      */
     public BookManagementPanel() {
-        initComponents();
-       
-      
+        initComponents();      
+        LoadDataToComboBox();
+        LoadDataToJTable();
     }
 
     /**
@@ -36,30 +42,31 @@ public class BookManagementPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtTenTheLoai = new javax.swing.JTextField();
+        txtTieude = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtTacgia = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtGiaban = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cboTheLoai = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         btnNhapMoi = new javax.swing.JButton();
         btnLuu = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblTheLoai = new javax.swing.JTable();
+        tblSach = new javax.swing.JTable();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Mã loại");
+        jLabel1.setText("Mã sách");
 
         txtId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtId.setEnabled(false);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Tên loại");
+        jLabel2.setText("Tiêu đề");
 
-        txtTenTheLoai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtTieude.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Tác giả");
@@ -74,8 +81,8 @@ public class BookManagementPanel extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Thể loại");
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTheLoai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cboTheLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -87,7 +94,7 @@ public class BookManagementPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cboTheLoai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -95,7 +102,7 @@ public class BookManagementPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTenTheLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTieude, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -115,7 +122,7 @@ public class BookManagementPanel extends javax.swing.JPanel {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTenTheLoai)
+                    .addComponent(txtTieude)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -128,17 +135,27 @@ public class BookManagementPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboTheLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
         btnNhapMoi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnNhapMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/10464_label_new_nuevo_orange_sticker_icon.png"))); // NOI18N
         btnNhapMoi.setText("Nhập mới");
+        btnNhapMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhapMoiActionPerformed(evt);
+            }
+        });
 
         btnLuu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnLuu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/285657_floppy_guardar_save_icon.png"))); // NOI18N
         btnLuu.setText("Lưu");
+        btnLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLuuActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCapNhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/592600_arrow_cycle_interface_update_icon.png"))); // NOI18N
@@ -175,7 +192,7 @@ public class BookManagementPanel extends javax.swing.JPanel {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        tblTheLoai.setModel(new javax.swing.table.DefaultTableModel(
+        tblSach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -186,7 +203,12 @@ public class BookManagementPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tblTheLoai);
+        tblSach.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSachMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblSach);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -216,13 +238,59 @@ public class BookManagementPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tblSachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSachMouseClicked
+        // TODO add your handling code here:
+        int rowIndex = tblSach.getSelectedRow();
+        if(rowIndex>=0)
+        {
+            //lấy mã sách được chọn            
+            int id = Integer.parseInt(tblSach.getValueAt(rowIndex, 0).toString());
+            //tìm thông tin sách theo id thông qua lớp SachBUS
+            Sach s = sachBUS.findById(id);
+            //hiển thị thông tin sách lên các điều khiển nhập liệu
+            txtId.setText(s.getId()+"");
+            txtTieude.setText(s.getTieude());
+            txtTacgia.setText(s.getTacgia());
+            txtGiaban.setText(s.getGiaban()+"");
+            cboTheLoai.setSelectedItem(new TheLoai(s.getIdtheloai())); 
+        }        
+    }//GEN-LAST:event_tblSachMouseClicked
+
+    private void btnNhapMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapMoiActionPerformed
+        // TODO add your handling code here:
+        txtId.setText("");
+        txtTacgia.setText("");
+        txtTieude.setText("");
+        txtGiaban.setText("");
+        cboTheLoai.setSelectedIndex(0);
+        txtTieude.requestFocus();
+    }//GEN-LAST:event_btnNhapMoiActionPerformed
+
+    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
+        // TODO add your handling code here:
+        //1.kiem tra hop le
+        //sinh vien tu cai dat
+        //2.tao doi tuong sach
+        Sach obj = new Sach();
+        obj.setTieude(txtTieude.getText());
+        obj.setTacgia(txtTacgia.getText());
+        obj.setGiaban(Double.parseDouble(txtGiaban.getText()));
+        obj.setIdtheloai(((TheLoai)cboTheLoai.getSelectedItem()).getId());
+        //3.Them doi tuong sach vao CSDL (gọi thông qua lớp SachBUS)
+        int kq = sachBUS.Insert(obj);
+        //4.thông báo kết quả cho người dùng
+        JOptionPane.showMessageDialog(this, "Đã thêm " + kq + " sách");
+        //5. Nạp lại dữ liệu cho JTable 
+        LoadDataToJTable();        
+    }//GEN-LAST:event_btnLuuActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCapNhat;
     private javax.swing.JButton btnLuu;
     private javax.swing.JButton btnNhapMoi;
     private javax.swing.JButton btnXoa;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cboTheLoai;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -231,10 +299,46 @@ public class BookManagementPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblTheLoai;
+    private javax.swing.JTable tblSach;
     private javax.swing.JTextField txtGiaban;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtTacgia;
-    private javax.swing.JTextField txtTenTheLoai;
+    private javax.swing.JTextField txtTieude;
     // End of variables declaration//GEN-END:variables
+
+    private void LoadDataToComboBox() {         
+         //tạo model cho JComboBox cbotheloai        
+         DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
+         cboTheLoai.setModel(cboModel);
+         //doc tat ca the loai tu CSDL thong qua lop TheLoaiBUS
+         var dsTheLoai = theloaiBUS.getAll();
+         for(TheLoai tl: dsTheLoai)
+         {
+            cboModel.addElement(tl);
+         }     
+    }
+
+    private void LoadDataToJTable() {
+         //tạo model cho JTable 
+         String[] tieudecot = {"#id","Tiêu đề", "Tác giả","Giá bán","Thể loại"};
+         DefaultTableModel tblModel = new DefaultTableModel(tieudecot, 0);
+         tblSach.setModel(tblModel);
+         //đọc tất cả sách từ CSDL thông qua lớp SachBUS
+         var dsSach =  sachBUS.getAll();
+         //hiển thị lên JTable
+         for(Sach x: dsSach)
+         {
+            tblModel.addRow(new Object[] {x.getId(),x.getTieude(),x.getTacgia(),x.getGiaban(),x.getIdtheloai()});
+         }
+         //hiển thị sách đầu tiên lên điều khiển nhập liệu
+         var s = dsSach.get(0);
+         txtId.setText(s.getId()+"");
+         txtTieude.setText(s.getTieude());
+         txtTacgia.setText(s.getTacgia());
+         txtGiaban.setText(s.getGiaban()+"");
+         cboTheLoai.setSelectedItem(new TheLoai(s.getIdtheloai())); 
+       
+         //set chọn dòng đầu tiên của JTable
+         tblSach.setRowSelectionInterval(0, 0);       
+    }
 }

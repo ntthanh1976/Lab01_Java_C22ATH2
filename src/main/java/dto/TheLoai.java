@@ -33,6 +33,15 @@ public class TheLoai {
 
     @Override
     public String toString() {
-        return "TheLoai{" + "id=" + id + ", tentheloai=" + tentheloai + '}';
-    }      
+        return  id+ " - "+ tentheloai;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        final TheLoai other = (TheLoai) obj;
+        return this.id == other.id;
+    } 
+    
+  
+       
 }

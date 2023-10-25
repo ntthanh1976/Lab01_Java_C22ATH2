@@ -143,6 +143,11 @@ public class CategoryManagementPanel extends javax.swing.JPanel {
             }
         ));
         tblTheLoai.setRowHeight(25);
+        tblTheLoai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTheLoaiMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblTheLoai);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -174,6 +179,16 @@ public class CategoryManagementPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblTheLoaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTheLoaiMouseClicked
+        // TODO add your handling code here:
+        int rowIndex = tblTheLoai.getSelectedRow();
+        if(rowIndex>=0)
+        {
+           txtId.setText(tblTheLoai.getValueAt(rowIndex, 0).toString());
+           txtTenTheLoai.setText(tblTheLoai.getValueAt(rowIndex, 1).toString());
+        }
+    }//GEN-LAST:event_tblTheLoaiMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

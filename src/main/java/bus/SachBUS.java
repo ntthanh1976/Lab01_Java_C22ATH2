@@ -14,7 +14,12 @@ public class SachBUS {
     public ArrayList<Sach> getAll()
     {
        return sachDAO.getAll();
-    }    
+    }   
+    
+    public Sach findById(int id)
+    {
+      return sachDAO.findById(id);
+    }
     public int Insert(Sach s)
     {
        return sachDAO.Insert(s);
